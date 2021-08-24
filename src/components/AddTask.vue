@@ -1,5 +1,5 @@
 <template>
-  <form @submit="onSubmit" class="add-form">
+  <form @submit.prevent="onSubmit" class="add-form">
     <div class="form-control">
       <label>Task</label>
       <input type="text" v-model="text" name="text" placeholder="Add Task" />
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import firebase from 'firebase'
 export default {
   name: 'AddTask',
   data() {
@@ -30,22 +31,22 @@ export default {
       text: '',
       day: '',
       reminder: false,
+      id:''
     }
   },
   methods: {
-    onSubmit(e) {
-      e.preventDefault()
-
+    onSubmit() {
       if (!this.text) {
         alert('Please add a task')
         return
       }
 
       const newTask = {
-        // id: Math.floor(Math.random() * 100000),
+        //id: tasks.length() +1,
         text: this.text,
         day: this.day,
         reminder: this.reminder,
+        id : firebase.firestore().collection('users').doc().id
       }
 
       this.$emit('add-task', newTask)
@@ -53,6 +54,7 @@ export default {
       this.text = ''
       this.day = ''
       this.reminder = false
+      
     },
   },
 }
